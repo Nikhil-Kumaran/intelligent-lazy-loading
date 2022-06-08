@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { lazy, Suspense, useState } from "react";
+/* Usual Import */
+import Chart from "./Chart";
+
+/* Naive lazy load */
+// const Chart = lazy(() => import("./Chart"));
+
+/* Lazy load with prefetch */
+// const Chart = lazy(() => import(/* webpackPrefetch: true */ "./Chart"));
+
+/* Predictive lazy load */
+// const loadChart = () => import("./Chart");
+// const Chart = lazy(loadChart);
 
 function App() {
+  const [shouldShowChart, setShouldShowChart] = useState(false);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button
+        onClick={() => setShouldShowChart(!shouldShowChart)}
+        // onFocus={loadChart}
+        // onMouseEnter={loadChart}
+      >
+        {shouldShowChart ? "Hide chart" : "Show chart"}
+      </button>
+      <Suspense fallback={<div>Loading...</div>}>
+        {shouldShowChart && <Chart />}
+      </Suspense>
     </div>
   );
 }
